@@ -26,7 +26,6 @@ namespace AppBot
 {
     public partial class Form1 : Form
     {
-        DriverFirefox driverSelenium = null;
         DriverChrome driverChrome = null;
         List<DatosBusqueda> listadoDatosBusqueda = new List<DatosBusqueda>();
         List<String> datosProcesados = new List<string>();
@@ -73,7 +72,7 @@ namespace AppBot
         public List<DatosBusqueda> mapearDatosExcel(List<List<string>> datos)
         {
             var listadoDatosBusqueda = (from d in datos
-                   select new DatosBusqueda { NumIdentificacion = d[0], TipoDocumento=d[1] })
+                   select new DatosBusqueda { TipoDocumento=d[0], NumIdentificacion = d[1] })
                    .ToList();
 
             return listadoDatosBusqueda;
@@ -116,8 +115,8 @@ namespace AppBot
             this.refrescarEstado = false;
       
             EstadoForm.procesando = false;
-            if (driverSelenium != null)
-                driverSelenium.CloseDriver();
+            if (driverChrome != null)
+                driverChrome.CloseDriver();
 
             Thread.Sleep(500);
         }
@@ -383,45 +382,6 @@ namespace AppBot
   
 
       
-        }
-
-        private void seleccionarTipoIdentificacion(string tipo)
-        {
-            try
-            {
-                driverSelenium.driver.SwitchTo().Frame("page");
-            }
-            catch (Exception)
-            {
-
-            }
-
-            SelectElement select = new SelectElement(driverSelenium.driver.FindElement(By.XPath("//*[@id='tipoDocumento']")));
-
-            switch (tipo)
-            {
-                case "CC":
-                    select.SelectByValue("CC");
-                    break;
-                case "CE":
-                    select.SelectByValue("CE");
-                    break;
-                case "NIT":
-                    select.SelectByValue("NI");
-                    break;
-                case "PA":
-                    select.SelectByValue("PA");
-                    break;
-                case "PNI":
-                    select.SelectByValue("SE");
-                    break;
-                case "TI":
-                    select.SelectByValue("TI");
-                    break;
-                default:
-                    break;
-            }
-
         }
 
         private void escribirNumIdentificacion()

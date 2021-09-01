@@ -10,6 +10,7 @@ namespace AppBot.Modelos
     {
         public String TipoIdentificacion { get; set; }
         public String NumIdentificacion { get; set; }
+        public String Estado { get; set; }
         public String Categoria { get; set; }
         public String FechaExpedicion { get; set; }
         public String FechaVencimiento { get; set; }

@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AppBot.Modelos
+namespace AppBotVUR.Modelos
 {
     public class ResultadoProceso
     {
-        public DatosBusqueda datosBusqueda { get; set; }
-        public List<Datos> datosObtenidos { get; set; }
-        public string resultado { get; set; }
+        public Boolean Resultado { get; set; }
+        public String Mensaje { get; set; }
     }
 }

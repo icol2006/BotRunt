@@ -8,7 +8,7 @@ namespace AppBot.Modelos
 {
     public static class EstadoForm
     {
-        public static List<ResultadoProceso> listadoResultados = new List<ResultadoProceso>();
+        public static List<DatosObtenidos> listadoResultados = new List<DatosObtenidos>();
 
         public static List<String> resultados = new List<String>();
 
@@ -26,7 +26,7 @@ namespace AppBot.Modelos
             List<Datos> listado = new List<Datos>();
             var listaProcesar = EstadoForm.listadoResultados.Where(x => x.resultado.Equals("CON_INFORMACION")).ToList();
 
-            foreach (ResultadoProceso items in listaProcesar)
+            foreach (DatosObtenidos items in listaProcesar)
             {
                 foreach (var item in items.datosObtenidos)
                 {

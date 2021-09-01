@@ -89,6 +89,7 @@
     </Compile>
     <Compile Include="Modelos\Datos.cs" />
     <Compile Include="Modelos\DatosBusqueda.cs" />
+    <Compile Include="Modelos\DatosObtenidos.cs" />
     <Compile Include="Modelos\ResultadoProceso.cs" />
     <Compile Include="Utilidades\LogEventos.cs" />
     <Compile Include="Modelos\EstadoForm.cs" />
