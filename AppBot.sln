@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31105.61
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppBotRunt", "AppBot\AppBotRunt.csproj", "{ED516A3F-0E91-4F8A-BCAD-6B6D6945DB6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppDriverIExplorer", "AppDriverIExplorer\AppDriverIExplorer.csproj", "{5962C9E3-261E-4897-9EF9-1B54838EB7C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppUtilidades", "AppUtilidades\AppUtilidades.csproj", "{7D37FD82-A255-4BF7-836F-122F88DB6EEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppDriverFirefox", "AppDriverFirefox\AppDriverFirefox.csproj", "{0A696BF3-6CB7-4BC9-99A3-D040EFEAEC01}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppDriverChrome", "DriverChrome\AppDriverChrome.csproj", "{A4DBDC7F-01F6-4490-B04B-0E4EBDCCDE81}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ED516A3F-0E91-4F8A-BCAD-6B6D6945DB6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED516A3F-0E91-4F8A-BCAD-6B6D6945DB6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED516A3F-0E91-4F8A-BCAD-6B6D6945DB6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED516A3F-0E91-4F8A-BCAD-6B6D6945DB6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5962C9E3-261E-4897-9EF9-1B54838EB7C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5962C9E3-261E-4897-9EF9-1B54838EB7C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5962C9E3-261E-4897-9EF9-1B54838EB7C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5962C9E3-261E-4897-9EF9-1B54838EB7C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D37FD82-A255-4BF7-836F-122F88DB6EEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D37FD82-A255-4BF7-836F-122F88DB6EEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D37FD82-A255-4BF7-836F-122F88DB6EEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D37FD82-A255-4BF7-836F-122F88DB6EEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A696BF3-6CB7-4BC9-99A3-D040EFEAEC01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A696BF3-6CB7-4BC9-99A3-D040EFEAEC01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A696BF3-6CB7-4BC9-99A3-D040EFEAEC01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A696BF3-6CB7-4BC9-99A3-D040EFEAEC01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4DBDC7F-01F6-4490-B04B-0E4EBDCCDE81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4DBDC7F-01F6-4490-B04B-0E4EBDCCDE81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4DBDC7F-01F6-4490-B04B-0E4EBDCCDE81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4DBDC7F-01F6-4490-B04B-0E4EBDCCDE81}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {333B38D3-15F0-4D3F-B7CE-6B484124F46D}
+	EndGlobalSection
+EndGlobal
