@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppBotRunt", "AppBot\AppBot
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppDriverIExplorer", "AppDriverIExplorer\AppDriverIExplorer.csproj", "{5962C9E3-261E-4897-9EF9-1B54838EB7C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppUtilidades", "AppUtilidades\AppUtilidades.csproj", "{7D37FD82-A255-4BF7-836F-122F88DB6EEC}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppDriverFirefox", "AppDriverFirefox\AppDriverFirefox.csproj", "{0A696BF3-6CB7-4BC9-99A3-D040EFEAEC01}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppDriverChrome", "DriverChrome\AppDriverChrome.csproj", "{A4DBDC7F-01F6-4490-B04B-0E4EBDCCDE81}"
@@ -27,10 +25,6 @@ Global
 		{5962C9E3-261E-4897-9EF9-1B54838EB7C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5962C9E3-261E-4897-9EF9-1B54838EB7C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5962C9E3-261E-4897-9EF9-1B54838EB7C2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7D37FD82-A255-4BF7-836F-122F88DB6EEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7D37FD82-A255-4BF7-836F-122F88DB6EEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7D37FD82-A255-4BF7-836F-122F88DB6EEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7D37FD82-A255-4BF7-836F-122F88DB6EEC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0A696BF3-6CB7-4BC9-99A3-D040EFEAEC01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0A696BF3-6CB7-4BC9-99A3-D040EFEAEC01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A696BF3-6CB7-4BC9-99A3-D040EFEAEC01}.Release|Any CPU.ActiveCfg = Release|Any CPU

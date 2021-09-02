@@ -1,5 +1,5 @@
 ﻿
-namespace AppBot
+namespace AppBotVUR
 {
     partial class Form1
     {
@@ -52,6 +52,7 @@ namespace AppBot
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.configuracionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tiposDeDocumentosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.apiCaptchaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDatos)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -170,7 +171,7 @@ namespace AppBot
             // 
             this.lblEstado.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblEstado.AutoSize = true;
-            this.lblEstado.Location = new System.Drawing.Point(360, 409);
+            this.lblEstado.Location = new System.Drawing.Point(341, 406);
             this.lblEstado.Name = "lblEstado";
             this.lblEstado.Size = new System.Drawing.Size(0, 13);
             this.lblEstado.TabIndex = 20;
@@ -215,7 +216,6 @@ namespace AppBot
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Procesamiento";
             this.tabPage1.UseVisualStyleBackColor = true;
-            this.tabPage1.Click += new System.EventHandler(this.tabPage1_Click);
             // 
             // btnExportar
             // 
@@ -235,7 +235,7 @@ namespace AppBot
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(425, 322);
+            this.tabPage2.Size = new System.Drawing.Size(425, 307);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Log";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -244,7 +244,7 @@ namespace AppBot
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(341, 381);
+            this.label2.Location = new System.Drawing.Point(341, 386);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(63, 13);
             this.label2.TabIndex = 23;
@@ -284,10 +284,11 @@ namespace AppBot
             // configuracionToolStripMenuItem
             // 
             this.configuracionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tiposDeDocumentosToolStripMenuItem});
+            this.tiposDeDocumentosToolStripMenuItem,
+            this.apiCaptchaToolStripMenuItem});
             this.configuracionToolStripMenuItem.Name = "configuracionToolStripMenuItem";
-            this.configuracionToolStripMenuItem.Size = new System.Drawing.Size(95, 20);
-            this.configuracionToolStripMenuItem.Text = "Configuracion";
+            this.configuracionToolStripMenuItem.Size = new System.Drawing.Size(106, 20);
+            this.configuracionToolStripMenuItem.Text = "Configuraciones";
             // 
             // tiposDeDocumentosToolStripMenuItem
             // 
@@ -295,6 +296,13 @@ namespace AppBot
             this.tiposDeDocumentosToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.tiposDeDocumentosToolStripMenuItem.Text = "Tipos de documentos";
             this.tiposDeDocumentosToolStripMenuItem.Click += new System.EventHandler(this.tiposDeDocumentosToolStripMenuItem_Click);
+            // 
+            // apiCaptchaToolStripMenuItem
+            // 
+            this.apiCaptchaToolStripMenuItem.Name = "apiCaptchaToolStripMenuItem";
+            this.apiCaptchaToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+            this.apiCaptchaToolStripMenuItem.Text = "Api Captcha";
+            this.apiCaptchaToolStripMenuItem.Click += new System.EventHandler(this.apiCaptchaToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -352,6 +360,7 @@ namespace AppBot
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem configuracionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tiposDeDocumentosToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem apiCaptchaToolStripMenuItem;
     }
 }
 

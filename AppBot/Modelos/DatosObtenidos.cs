@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AppBot.Modelos
+namespace AppBotVUR.Modelos
 {
     public class DatosObtenidos
     {
-        public DatosBusqueda datosBusqueda { get; set; }
-        public List<Datos> datosObtenidos { get; set; }
-        public string resultado { get; set; }
+        public String TipoDocumento { get; set; }
+        public String NumIdentificacion { get; set; }
+        public List<Datos> listadoDatos { get; set; }
+        public ResultadoProceso ResultadoProceso { get; set; }
     }
 }

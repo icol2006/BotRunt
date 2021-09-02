@@ -81,6 +81,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmApiCaptcha.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmApiCaptcha.Designer.cs">
+      <DependentUpon>FrmApiCaptcha.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmTipoDocumentos.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -96,8 +102,12 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilidades\Parametros.cs" />
+    <Compile Include="Utilidades\Utiles.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmApiCaptcha.resx">
+      <DependentUpon>FrmApiCaptcha.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmTipoDocumentos.resx">
       <DependentUpon>FrmTipoDocumentos.cs</DependentUpon>

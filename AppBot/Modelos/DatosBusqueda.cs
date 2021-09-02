@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AppBot.Modelos
+namespace AppBotVUR.Modelos
 {
     public class DatosBusqueda
     {

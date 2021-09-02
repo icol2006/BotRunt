@@ -1,28 +1,16 @@
-﻿using AppBot.Bot;
-using AppBot.Modelos;
-using AppBot.Utilidades;
-using AppBotVUR;
+﻿using AppBotVUR.Bot;
+using AppBotVUR.Modelos;
+using AppBotVUR.Utilidades;
 using AppDriverChrome;
-using AppDriverFirefox;
-using AppDriverIExplorer;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Support.UI;
 using Spire.Xls;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace AppBot
+namespace AppBotVUR
 {
     public partial class Form1 : Form
     {
@@ -33,10 +21,8 @@ namespace AppBot
 
         public Form1()
         {
-            InitializeComponent();
-            
+            InitializeComponent();            
         }
-
 
 
         private void button7_Click(object sender, EventArgs e)
@@ -51,32 +37,24 @@ namespace AppBot
                 limpiarDatos();
                 var archivoExcel = Utiles.abrirArchivo();
                 var datosBusqueda = Utiles.obtenerDatosExcel(archivoExcel);
-                this.listadoDatosBusqueda= this.mapearDatosExcel(datosBusqueda);
+                this.listadoDatosBusqueda=Utiles.mapearDatosExcel(datosBusqueda);
 
                 this.dgvDatos.Rows.Clear();
                 foreach (var item in listadoDatosBusqueda)
                 {
-                    Utiles.cargarGridDatosProcesar(this.dgvDatos, "Num=> "+ item.NumIdentificacion+ " || Tipo documento=> " + item.TipoDocumento);
+                    Utiles.cargarGridDatosProcesar(this.dgvDatos, "Num=> "+ item.NumIdentificacion+ " || " + item.TipoDocumento);
                 }
                 EstadoForm.totalRegistros = listadoDatosBusqueda.Count()+"";
                 EstadoForm.listadoResultados.Clear();
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
         
             }
-
         }
 
-        public List<DatosBusqueda> mapearDatosExcel(List<List<string>> datos)
-        {
-            var listadoDatosBusqueda = (from d in datos
-                   select new DatosBusqueda { TipoDocumento=d[0], NumIdentificacion = d[1] })
-                   .ToList();
 
-            return listadoDatosBusqueda;
-        }
 
         private void button8_Click(object sender, EventArgs e)
         {
@@ -88,20 +66,6 @@ namespace AppBot
             Utiles.limpiarDatagridView(this.dgvDatos);
             this.listadoDatosBusqueda.Clear();
             EstadoForm.listadoResultados.Clear();
-        }
-
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-
-
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-
-
-
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -199,11 +163,7 @@ namespace AppBot
 
                                 lblCantidadRegistros.Text = EstadoForm.totalRegistros;
                                 lblTotalProcesado.Text =EstadoForm.listadoResultados.Count()+"";
-                                int rowActualGridDatos = Convert.ToInt32(EstadoForm.listadoResultados.Count());
-                                if(dgvDatos.Rows.Count>1)
-                                {
-                                    dgvDatos.CurrentCell = dgvDatos.Rows[rowActualGridDatos].Cells[0];
-                                }                                            
+                                                                   
                             }));
                         }
                         catch (Exception ex)
@@ -284,166 +244,35 @@ namespace AppBot
             });
             thread.Start();
 
-
         }
-
 
         private void btnExportar_Click(object sender, EventArgs e)
         {
-            exportarDatos();
-        }
+          var res=  Utiles.exportarDatos();
 
-        public static void exportarDatos()
-        {
-            try
-            {        
-                //Create a workbook
-                Workbook workbook = new Workbook();
-                var datosObtenidos = EstadoForm.obtenerListadoResultados();
-
-                //Initailize worksheet
-                Worksheet sheet = workbook.Worksheets[0];
-
-                sheet.Range["A" + 1].Text = "";
-                sheet.Range["B" + 1].Text = "Propietario";
-                sheet.Range["C" + 1].Text = "Tipo Identificación";
-                sheet.Range["D" + 1].Text = "Numero de identificacion";
-                sheet.Range["E" + 1].Text = "Direccion del inmueble";
-                sheet.Range["F" + 1].Text = "Referencia Catastral";
-                sheet.Range["G" + 1].Text = "Departamento";
-                sheet.Range["H" + 1].Text = "Municipio";
-                sheet.Name = "CON_INFORMACION";
-
-                for (int i = 0; i < datosObtenidos.Count(); i++)
-                {
-                    sheet.Range["A" + (i+2)].Text = (i) + "";
-                    sheet.Range["C" + (i + 2)].Text = datosObtenidos[i].TipoIdentificacion ?? "";
-                    sheet.Range["D" + (i + 2)].Text = datosObtenidos[i].NumIdentificacion ?? "";
-                    sheet.Range["E" + (i + 2)].Text = datosObtenidos[i].Categoria ?? "";
-                    sheet.Range["F" + (i + 2)].Text = datosObtenidos[i].FechaExpedicion ?? "";
-                    sheet.Range["G" + (i + 2)].Text = datosObtenidos[i].FechaVencimiento ?? "";
-                    sheet.Range["H" + (i + 2)].Text = datosObtenidos[i].CategoriaAntigua ?? "";
-                }
-
-                //SIN INFORMACION
-                Worksheet sheet3 = workbook.Worksheets[1];
-                sheet3.Name = "SIN_INFORMACION";
-
-                var datosSinInformacion = EstadoForm.listadoResultados.Where(x => (x.resultado.Equals("SIN_INFORMACION"))).ToList();
-
-                sheet3.Range["A" + 1].Text = "";
-                sheet3.Range["B" + 1].Text = "Num identificacion";
-                sheet3.Range["C" + 1].Text = "Tipo doc";
-
-
-                for (int i = 0; i < datosSinInformacion.Count(); i++)
-                {
-                    sheet3.Range["A" + (i + 2)].Text = (i) + "";
-                    sheet3.Range["B" + (i + 2)].Text = datosSinInformacion[i].datosBusqueda.NumIdentificacion;
-                    sheet3.Range["C" + (i + 2)].Text = datosSinInformacion[i].datosBusqueda.TipoDocumento;
-
-                }
-
-
-
-
-                //Save the file
-                workbook.SaveToFile("datos.xls", ExcelVersion.Version97to2003);
-
-                //Launch the file
-                System.Diagnostics.Process.Start("datos.xls");
-
-            }
-            catch (Exception ex)
+            if(res.Procesado==false)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(res.Mensaje);
             }
-   
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             actualizarEstado();
+            EstadoForm.dataGridView = this.dgvDatos;
+            EstadoForm.form = this;
         }
-
-        private void tabPage1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-            obtenerDatos();
-
-            //var fsd = driverSelenium.driver.FindElements(By.XPath("//*[@class='panel-heading']"));
-            //SelectElement select = new SelectElement(driverSelenium.driver.FindElement(By.XPath("//*[@id='criterio']")));
-            ////select.SelectByValue("Documento");
-            //select.SelectByText("Documento");
-  
-
-      
-        }
-
-        private void escribirNumIdentificacion()
-        {
-           var element= driverChrome.driver.FindElement(By.XPath("//*[@id='numeroDocumento']"));
-            element.SendKeys("79858092");            
-        }
-
-        private void obtenerDatos()
-        {
-            try
-            {
-                driverChrome.driver.SwitchTo().Frame("page");
-            }
-            catch (Exception)
-            {
-
-            }
-
-            try
-            {
-                List<Datos> listado = new List<Datos>();
-                Datos datos = new Datos();
-                var filas = driverChrome.driver.FindElements(By.XPath("//div[@ng-show='pantallaBusqueda']/div/table/tbody/tr"));
-
-                foreach (IWebElement item in filas)
-                {
-                    var dataTd = item.FindElements(By.TagName("td"));
-
-
-                    //datos.Propietario= dataTd[1].Text;
-                    //datos.Propietario = procesarString(datos.Propietario, "Total");
-                    //datos.TipoIdentificacion = dataTd[2].Text;
-                    //datos.NumIdentificacion = dataTd[3].Text;
-                    //datos.Direccion = dataTd[4].Text;
-                    //datos.Direccion = procesarString(datos.Direccion, "(DIRECCION");
-                    //datos.ReferenciaCatastral = dataTd[6].Text;
-                    listado.Add(datos);
-                    datos = new Datos();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            int adf = 0;
-        }
-
-        private String procesarString(String palabra, String valorBuscar)
-        {
-            String resultado = "";
-            int indiceFinal = 0;
-            indiceFinal = palabra.IndexOf(valorBuscar);
-            resultado = palabra.Substring(0, indiceFinal);            
-
-            return resultado;
-        }
-
+ 
         private void tiposDeDocumentosToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FrmTipoDocumentos frmTipoDocumentos = new FrmTipoDocumentos();
             frmTipoDocumentos.Show();
+        }
+
+        private void apiCaptchaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmApiCaptcha frmApiCaptcha = new FrmApiCaptcha();
+            frmApiCaptcha.Show();
         }
     }
 }

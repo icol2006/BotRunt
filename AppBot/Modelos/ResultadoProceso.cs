@@ -8,7 +8,7 @@ namespace AppBotVUR.Modelos
 {
     public class ResultadoProceso
     {
-        public Boolean Resultado { get; set; }
+        public Boolean Procesado { get; set; }
         public String Mensaje { get; set; }
     }
 }

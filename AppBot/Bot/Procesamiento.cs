@@ -1,6 +1,4 @@
-﻿using AppBot.Modelos;
-using AppBot.Utilidades;
-using AppBotVUR.Modelos;
+﻿using AppBotVUR.Modelos;
 using OpenQA.Selenium;
 using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Support.UI;
@@ -11,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AppBot.Bot
+namespace AppBotVUR.Bot
 {
     public static class Procesamiento
     {
@@ -27,85 +25,49 @@ namespace AppBot.Bot
                 var resultado = Procesamiento.procesarRegistro(driver, itemActual);
                 EstadoForm.listadoResultados.Add(resultado);
 
-                EstadoForm.resultados.Add($"Num=>{itemActual.NumIdentificacion} Tipo=>{itemActual.TipoDocumento} {System.Environment.NewLine}Resultado=> {resultado.resultado}{System.Environment.NewLine}=========================");
+                String descripcionResultado = resultado.ResultadoProceso.Procesado == true ? "Procesado" : "No Procesado";
+                EstadoForm.resultados.Add($"Num=>{itemActual.NumIdentificacion} " +
+                    $"Tipo=>{itemActual.TipoDocumento} {System.Environment.NewLine} " +
+                    $"Resultado=> {descripcionResultado}" +
+                    $"{System.Environment.NewLine}=========================");
+
+                EstadoForm.actualizarGridDatos();
 
                 if (EstadoForm.procesando == false)
                 {
                     break;
                 }
             }
-
         }
 
         public static DatosObtenidos procesarRegistro(IWebDriver driver, DatosBusqueda datosBusqueda)
         {
-            WebDriverWait wait = null;
-            IWebElement element = null;
-            Boolean registroExiste = true;
-            DatosObtenidos resultadoProceso = new DatosObtenidos();
-
-            // procesarPaginaConsulta(driver, datosBusqueda);
-            procesarPaginaInformacion(driver);
-
+            ResultadoProceso resultadoProceso = new ResultadoProceso();
+            DatosObtenidos datosObtenidos = new DatosObtenidos();
+            List<Datos> listadoDatosObtenidos = new List<Datos>();
+            
             try
             {
+                // resultadoProceso = procesarPaginaConsulta(driver, datosBusqueda);
+                resultadoProceso.Procesado = true;
 
-
-                try
+                if (resultadoProceso.Procesado == true)
                 {
-                    //Wait 10 seconds till alert is present
-                    wait = new WebDriverWait(driver, new TimeSpan(0, 0, 2));
-                    var alert = wait.Until(ExpectedConditions.AlertIsPresent());
-
-                    //Accepting alert.
-                    alert.Accept();
-                    registroExiste = false;
+                    listadoDatosObtenidos = procesarPaginaInformacion(driver);
                 }
-                catch (Exception e)
-                {
-                }
-
-                if (registroExiste == true)
-                {
-
-
-                    //resultadoProceso.datosObtenidos = listadoDatos;
-                    //resultadoProceso.resultado = "CON_INFORMACION";
-                }
-                else
-                {
-                    throw new Exception();
-                }
-
-
             }
             catch (Exception ex)
             {
-                LogEventos.registrarLog(ex.Message);
-                Console.WriteLine(ex.Message);
-
-                resultadoProceso.datosBusqueda = datosBusqueda;
-                resultadoProceso.resultado = "SIN_INFORMACION";
-
-                Thread.Sleep(1000);
-
-                return resultadoProceso;
-            }
-            finally
-            {
-                try
-                {
-
-                    element = driver.FindElement(By.XPath("//button[@ng-click='reiniciar()']"));
-                    element.Click();
-                }
-                catch (Exception)
-                {
-
-                }
+                resultadoProceso.Procesado = false;
+                resultadoProceso.Mensaje = ex.Message;
             }
 
-            return resultadoProceso;
+            datosObtenidos.TipoDocumento = datosBusqueda.TipoDocumento;
+            datosObtenidos.NumIdentificacion = datosBusqueda.NumIdentificacion;
+            datosObtenidos.listadoDatos = listadoDatosObtenidos;
+            datosObtenidos.ResultadoProceso = resultadoProceso;           
+
+            return datosObtenidos;
         }
 
         private static ResultadoProceso procesarPaginaConsulta(IWebDriver driver, DatosBusqueda datosBusqueda)
@@ -121,9 +83,12 @@ namespace AppBot.Bot
                 element.Clear();
                 element.SendKeys(datosBusqueda.NumIdentificacion);
 
+                ///////////////////////
+                ////////////
+                ///
+                /////////cambiar por el api del captcha
                 element = driver.FindElement(By.XPath("//*[@id='captcha']"));
                 element.SendKeys("ffe45");
-
 
                 element = driver.FindElement(By.XPath("//*[contains(text(), 'Consultar')]"));
                 element.Click();
@@ -135,58 +100,35 @@ namespace AppBot.Bot
 
                 element = driver.FindElement(By.XPath("//*[@id='msgConsulta']"));
                 resultadoProceso.Mensaje = element.Text;
-                resultadoProceso.Resultado = element.Text.Trim().Length > 0 ? false : true;
+                resultadoProceso.Procesado = element.Text.Trim().Length > 0 ? false : true;
 
             }
             catch (Exception ex)
             {
                 resultadoProceso.Mensaje = ex.Message;
-                resultadoProceso.Resultado = false;
+                resultadoProceso.Procesado = false;
             }
 
             return resultadoProceso;
 
         }
 
-
-        private static ResultadoProceso procesarPaginaInformacion(IWebDriver driver)
+        private static List<Datos> procesarPaginaInformacion(IWebDriver driver)
         {
             IWebElement element = null;
-            ResultadoProceso resultadoProceso = new ResultadoProceso();
             WebDriverWait wait = new WebDriverWait(driver, new TimeSpan(0, 0, 4)); ;
 
-            try
-            {
-                element = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.ClassName("i_licencias")));
-                element.Click();
-                Thread.Sleep(500);
+            element = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.ClassName("i_licencias")));
+            element.Click();
+            Thread.Sleep(500);
 
-                var listadoDatos = obtenerDatosLicencias(driver);
-
-            }
-            catch (Exception ex)
-            {
-                resultadoProceso.Mensaje = ex.Message;
-                resultadoProceso.Resultado = false;
-            }
-
-            return resultadoProceso;
-
+            var listadoDatos = obtenerDatosLicencias(driver);
+            return listadoDatos;
         }
 
 
         private static void seleccionarTipoIdentificacion(IWebDriver driver, string tipo)
         {
-            try
-            {
-                driver.SwitchTo().Frame("page");
-            }
-            catch (Exception)
-            {
-
-            }
-
-
             SelectElement select = new SelectElement(driver.FindElement(By.XPath("//select")));
 
             switch (tipo)
@@ -228,14 +170,14 @@ namespace AppBot.Bot
             {
                 var item = filas[i];
                 var classCss = item.GetAttribute("class");
-                
-                if (classCss.ToLower().Contains("hide")==false)
+
+                if (classCss.ToLower().Contains("hide") == false)
                 {
                     var dataTd = item.FindElements(By.TagName("td"));
                     datos.Estado = dataTd[3].Text;
                     dataTd[5].FindElement(By.TagName("a")).Click();
 
-                    var ubicacionTablaCategorias = ubicacionTabla + $"[{i + 2}]//table/tbody/tr"; 
+                    var ubicacionTablaCategorias = ubicacionTabla + $"[{i + 2}]//table/tbody/tr";
                     Thread.Sleep(500);
 
                     try
