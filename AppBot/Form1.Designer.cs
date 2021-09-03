@@ -301,7 +301,7 @@ namespace AppBotVUR
             // 
             this.apiCaptchaToolStripMenuItem.Name = "apiCaptchaToolStripMenuItem";
             this.apiCaptchaToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
-            this.apiCaptchaToolStripMenuItem.Text = "Api Captcha";
+            this.apiCaptchaToolStripMenuItem.Text = "Api  key";
             this.apiCaptchaToolStripMenuItem.Click += new System.EventHandler(this.apiCaptchaToolStripMenuItem_Click);
             // 
             // Form1

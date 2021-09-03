@@ -1,9 +1,12 @@
 ﻿using AppBotVUR.Modelos;
+using AppBotVUR.Utilidades;
 using OpenQA.Selenium;
 using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -14,7 +17,7 @@ namespace AppBotVUR.Bot
     public static class Procesamiento
     {
 
-        public static void iniciarProcesamiento(IWebDriver driver, List<DatosBusqueda> datosBusqueda)
+        public async static void iniciarProcesamiento(IWebDriver driver, List<DatosBusqueda> datosBusqueda)
         {
             //Datos
             EstadoForm.totalRegistros = datosBusqueda.Count() + "";
@@ -22,7 +25,7 @@ namespace AppBotVUR.Bot
             for (int i = 0; i < datosBusqueda.Count(); i++)
             {
                 var itemActual = datosBusqueda[i];
-                var resultado = Procesamiento.procesarRegistro(driver, itemActual);
+                var resultado = await Procesamiento.procesarRegistro(driver, itemActual);
                 EstadoForm.listadoResultados.Add(resultado);
 
                 String descripcionResultado = resultado.ResultadoProceso.Procesado == true ? "Procesado" : "No Procesado";
@@ -40,7 +43,7 @@ namespace AppBotVUR.Bot
             }
         }
 
-        public static DatosObtenidos procesarRegistro(IWebDriver driver, DatosBusqueda datosBusqueda)
+        public async static Task<DatosObtenidos> procesarRegistro(IWebDriver driver, DatosBusqueda datosBusqueda)
         {
             ResultadoProceso resultadoProceso = new ResultadoProceso();
             DatosObtenidos datosObtenidos = new DatosObtenidos();
@@ -48,7 +51,7 @@ namespace AppBotVUR.Bot
             
             try
             {
-                // resultadoProceso = procesarPaginaConsulta(driver, datosBusqueda);
+                resultadoProceso =await procesarPaginaConsulta(driver, datosBusqueda);
                 resultadoProceso.Procesado = true;
 
                 if (resultadoProceso.Procesado == true)
@@ -70,7 +73,7 @@ namespace AppBotVUR.Bot
             return datosObtenidos;
         }
 
-        private static ResultadoProceso procesarPaginaConsulta(IWebDriver driver, DatosBusqueda datosBusqueda)
+        private async static Task<ResultadoProceso> procesarPaginaConsulta(IWebDriver driver, DatosBusqueda datosBusqueda)
         {
             IWebElement element = null;
             ResultadoProceso resultadoProceso = new ResultadoProceso();
@@ -87,8 +90,13 @@ namespace AppBotVUR.Bot
                 ////////////
                 ///
                 /////////cambiar por el api del captcha
+                element = driver.FindElement(By.XPath("//*[@id='imgCaptcha']"));
+                var imagen= GetElementScreenShot(driver, element);
+                imagen.Save(Parametros.imageCaptchaPath);
+                var codigo= await Utiles.solvecatcha(Parametros.imageCaptchaPath, _2CaptchaAPI.Enums.FileType.Png);
+               
                 element = driver.FindElement(By.XPath("//*[@id='captcha']"));
-                element.SendKeys("ffe45");
+                element.SendKeys(codigo);                           
 
                 element = driver.FindElement(By.XPath("//*[contains(text(), 'Consultar')]"));
                 element.Click();
@@ -155,6 +163,13 @@ namespace AppBotVUR.Bot
                     break;
             }
 
+        }
+
+        public static Bitmap GetElementScreenShot(IWebDriver driver, IWebElement element)
+        {
+            Screenshot sc = ((ITakesScreenshot)driver).GetScreenshot();
+            var img = Image.FromStream(new MemoryStream(sc.AsByteArray)) as Bitmap;
+            return img.Clone(new Rectangle(element.Location, element.Size), img.PixelFormat);
         }
 
         private static List<Datos> obtenerDatosLicencias(IWebDriver driver)

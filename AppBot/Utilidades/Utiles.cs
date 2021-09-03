@@ -1,9 +1,13 @@
-﻿using AppBotVUR.Modelos;
+﻿using _2CaptchaAPI;
+using _2CaptchaAPI.Enums;
+using AppBotVUR.Modelos;
+using Newtonsoft.Json;
 using Spire.Xls;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AppBotVUR.Utilidades
@@ -170,5 +174,28 @@ namespace AppBotVUR.Utilidades
             return resultadoProceso;
         }
 
+        public async static Task<String> solvecatcha(String imagePath, FileType e)
+        {
+            String res = "";
+            var captcha = new _2Captcha(Parametros.apiKey);
+            var image2 = await captcha.SolveImage(File.ReadAllBytes(imagePath), e);
+            res = image2.Response;
+
+            return res;
+        }
+
+        public static Configuraciones obtenerJSONConfiguraciones()
+        {
+            var json = File.ReadAllText(Parametros.pathConfiguraciones);
+            var result = JsonConvert.DeserializeObject<Configuraciones>(json);
+
+            return result;           
+        }
+
+        public static void salvarJSONConfiguraciones(Configuraciones configuraciones)
+        {
+            var jsonString = JsonConvert.SerializeObject(configuraciones);
+            File.WriteAllText(Parametros.pathConfiguraciones, jsonString);
+        }
     }
 }

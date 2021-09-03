@@ -1,13 +1,23 @@
-﻿using AppBotVUR.Bot;
+﻿using _2CaptchaAPI;
+using _2CaptchaAPI.Enums;
+using AppBotVUR.Bot;
 using AppBotVUR.Modelos;
 using AppBotVUR.Utilidades;
 using AppDriverChrome;
+using Newtonsoft.Json;
+using RestSharp;
 using Spire.Xls;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AppBotVUR
@@ -274,5 +284,24 @@ namespace AppBotVUR
             FrmApiCaptcha frmApiCaptcha = new FrmApiCaptcha();
             frmApiCaptcha.Show();
         }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            var json = File.ReadAllText("config.txt");
+            var result = JsonConvert.DeserializeObject<Configuraciones>(json);
+            var afdfdsd = result.apiKey;
+            result.apiKey = "fdafadf";
+            var jsonString = JsonConvert.SerializeObject(result);
+            File.WriteAllText("config.txt", jsonString);
+
+        }
+
+        public async void resolver()
+        {
+            Utiles.solvecatcha("", FileType.Jpeg);
+      
+        }
+
+       
     }
 }
