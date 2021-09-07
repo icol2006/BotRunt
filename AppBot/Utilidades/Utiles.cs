@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Spire.Xls;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -121,18 +122,20 @@ namespace AppBotVUR.Utilidades
                 //Initailize worksheet
                 Worksheet sheet = workbook.Worksheets[0];
 
-                sheet.Range["A" + 1].Text = "";
+                sheet.Range["A" + 1].Text = "#";
+                sheet.Range["B" + 1].Text = "Estado";
                 sheet.Range["C" + 1].Text = "TipoIdentificacion";
                 sheet.Range["D" + 1].Text = "NumIdentificacion";
                 sheet.Range["E" + 1].Text = "Categoria";
                 sheet.Range["F" + 1].Text = "FechaExpedicion";
                 sheet.Range["G" + 1].Text = "FechaVencimiento";
-                sheet.Range["H" + 1].Text = "Municipio";
+                sheet.Range["H" + 1].Text = "Categoría antigua";
                 sheet.Name = "CON_INFORMACION";
 
                 for (int i = 0; i < datosObtenidos.Count(); i++)
                 {
                     sheet.Range["A" + (i + 2)].Text = (i) + "";
+                    sheet.Range["B" + (i + 2)].Text = datosObtenidos[i].Estado ?? "";
                     sheet.Range["C" + (i + 2)].Text = datosObtenidos[i].TipoIdentificacion ?? "";
                     sheet.Range["D" + (i + 2)].Text = datosObtenidos[i].NumIdentificacion ?? "";
                     sheet.Range["E" + (i + 2)].Text = datosObtenidos[i].Categoria ?? "";
@@ -147,16 +150,17 @@ namespace AppBotVUR.Utilidades
 
                 var datosSinInformacion = EstadoForm.listadoResultados.Where(x => (x.ResultadoProceso.Procesado == false)).ToList();
 
-                sheet3.Range["A" + 1].Text = "";
+                sheet3.Range["A" + 1].Text = "3";
                 sheet3.Range["B" + 1].Text = "Num identificacion";
                 sheet3.Range["C" + 1].Text = "Tipo doc";
-
+                sheet3.Range["D" + 1].Text = "Error";
 
                 for (int i = 0; i < datosSinInformacion.Count(); i++)
                 {
                     sheet3.Range["A" + (i + 2)].Text = (i) + "";
                     sheet3.Range["B" + (i + 2)].Text = datosSinInformacion[i].NumIdentificacion;
                     sheet3.Range["C" + (i + 2)].Text = datosSinInformacion[i].TipoDocumento;
+                    sheet3.Range["D" + (i + 2)].Text = datosSinInformacion[i].ResultadoProceso.Mensaje;
                 }
 
                 //Save the file
@@ -196,6 +200,21 @@ namespace AppBotVUR.Utilidades
         {
             var jsonString = JsonConvert.SerializeObject(configuraciones);
             File.WriteAllText(Parametros.pathConfiguraciones, jsonString);
+        }
+
+        public static Image Base64ToImage(String data)
+        {
+            //data:image/gif;base64,
+            //this image is a single pixel (black)
+            byte[] bytes = Convert.FromBase64String(data);
+
+            Image image;
+            using (MemoryStream ms = new MemoryStream(bytes))
+            {
+                image = Image.FromStream(ms);
+            }
+
+            return image;
         }
     }
 }

@@ -1,14 +1,12 @@
 ﻿using AppBotVUR.Modelos;
 using AppBotVUR.Utilidades;
 using OpenQA.Selenium;
-using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,22 +15,23 @@ namespace AppBotVUR.Bot
     public static class Procesamiento
     {
 
-        public async static void iniciarProcesamiento(IWebDriver driver, List<DatosBusqueda> datosBusqueda)
+        public async static Task<Boolean> iniciarProcesamiento(IWebDriver driver, List<DatosBusqueda> datosBusqueda)
         {
             //Datos
             EstadoForm.totalRegistros = datosBusqueda.Count() + "";
-
+            DatosObtenidos resultado = new DatosObtenidos();
+            Thread.Sleep(3000);
             for (int i = 0; i < datosBusqueda.Count(); i++)
             {
                 var itemActual = datosBusqueda[i];
-                var resultado = await Procesamiento.procesarRegistro(driver, itemActual);
+                resultado = await Procesamiento.procesarRegistro(driver, itemActual);
                 EstadoForm.listadoResultados.Add(resultado);
 
                 String descripcionResultado = resultado.ResultadoProceso.Procesado == true ? "Procesado" : "No Procesado";
                 EstadoForm.resultados.Add($"Num=>{itemActual.NumIdentificacion} " +
                     $"Tipo=>{itemActual.TipoDocumento} {System.Environment.NewLine} " +
                     $"Resultado=> {descripcionResultado}" +
-                    $"{System.Environment.NewLine}=========================");
+                    $"{Environment.NewLine}=========================");
 
                 EstadoForm.actualizarGridDatos();
 
@@ -41,6 +40,8 @@ namespace AppBotVUR.Bot
                     break;
                 }
             }
+
+            return true;
         }
 
         public async static Task<DatosObtenidos> procesarRegistro(IWebDriver driver, DatosBusqueda datosBusqueda)
@@ -51,12 +52,19 @@ namespace AppBotVUR.Bot
             
             try
             {
-                resultadoProceso =await procesarPaginaConsulta(driver, datosBusqueda);
-                resultadoProceso.Procesado = true;
+                resultadoProceso = await procesarPaginaConsulta(driver, datosBusqueda);
 
                 if (resultadoProceso.Procesado == true)
                 {
-                    listadoDatosObtenidos = procesarPaginaInformacion(driver);
+                    listadoDatosObtenidos = procesarPaginaInformacion(driver);                
+            
+
+                    foreach (var item in listadoDatosObtenidos)
+                    {
+                        item.NumIdentificacion = datosBusqueda.NumIdentificacion;
+                        item.TipoIdentificacion = datosBusqueda.TipoDocumento;
+                    }
+                  
                 }
             }
             catch (Exception ex)
@@ -64,6 +72,9 @@ namespace AppBotVUR.Bot
                 resultadoProceso.Procesado = false;
                 resultadoProceso.Mensaje = ex.Message;
             }
+
+            //Finalizar consulta
+            clickTryCatch(driver, "//button[contains(text(), 'consulta')]");
 
             datosObtenidos.TipoDocumento = datosBusqueda.TipoDocumento;
             datosObtenidos.NumIdentificacion = datosBusqueda.NumIdentificacion;
@@ -86,29 +97,32 @@ namespace AppBotVUR.Bot
                 element.Clear();
                 element.SendKeys(datosBusqueda.NumIdentificacion);
 
-                ///////////////////////
-                ////////////
-                ///
-                /////////cambiar por el api del captcha
-                element = driver.FindElement(By.XPath("//*[@id='imgCaptcha']"));
-                var imagen= GetElementScreenShot(driver, element);
+                IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                var scriptCanvas = File.ReadAllText("canvas.js");
+                var scriptRemoveCanvas = File.ReadAllText("canvas _remove.js");
+
+                Thread.Sleep(1000);
+                var stringBase64 = (String)js.ExecuteScript(scriptCanvas);
+                var imagen = Utiles.Base64ToImage(stringBase64);
                 imagen.Save(Parametros.imageCaptchaPath);
-                var codigo= await Utiles.solvecatcha(Parametros.imageCaptchaPath, _2CaptchaAPI.Enums.FileType.Png);
-               
+
+                var codigo = await Utiles.solvecatcha(Parametros.imageCaptchaPath, _2CaptchaAPI.Enums.FileType.Png);
                 element = driver.FindElement(By.XPath("//*[@id='captcha']"));
-                element.SendKeys(codigo);                           
+                element.SendKeys(codigo);
+
 
                 element = driver.FindElement(By.XPath("//*[contains(text(), 'Consultar')]"));
                 element.Click();
 
-                Thread.Sleep(1000);
-
-                element = driver.FindElement(By.XPath("//*[@id='dlgConsulta']"));
-                var res = element.Displayed;
-
+                Thread.Sleep(500);
                 element = driver.FindElement(By.XPath("//*[@id='msgConsulta']"));
                 resultadoProceso.Mensaje = element.Text;
                 resultadoProceso.Procesado = element.Text.Trim().Length > 0 ? false : true;
+
+                Thread.Sleep(500);
+                clickTryCatch(driver, "//*[@class='modal-body']//button");
+             
+
 
             }
             catch (Exception ex)
@@ -118,8 +132,22 @@ namespace AppBotVUR.Bot
             }
 
             return resultadoProceso;
-
         }
+
+        private static void clickTryCatch(IWebDriver driver,string elemento)
+        {
+            try
+            {
+                var element = driver.FindElement(By.XPath(elemento));
+                element.Click();
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+
 
         private static List<Datos> procesarPaginaInformacion(IWebDriver driver)
         {
@@ -133,7 +161,6 @@ namespace AppBotVUR.Bot
             var listadoDatos = obtenerDatosLicencias(driver);
             return listadoDatos;
         }
-
 
         private static void seleccionarTipoIdentificacion(IWebDriver driver, string tipo)
         {
@@ -167,9 +194,17 @@ namespace AppBotVUR.Bot
 
         public static Bitmap GetElementScreenShot(IWebDriver driver, IWebElement element)
         {
+            //Screenshot ss = ((ITakesScreenshot)driver).GetScreenshot();
+            //ss.SaveAsFile(Parametros.imageCaptchaPath,
+            //ScreenshotImageFormat.Bmp);
+            //return null;
+
             Screenshot sc = ((ITakesScreenshot)driver).GetScreenshot();
             var img = Image.FromStream(new MemoryStream(sc.AsByteArray)) as Bitmap;
+            var loca = element.Location;
             return img.Clone(new Rectangle(element.Location, element.Size), img.PixelFormat);
+
+            //   return img.Clone(new Rectangle(element.Location,element.Size), img.PixelFormat);
         }
 
         private static List<Datos> obtenerDatosLicencias(IWebDriver driver)
@@ -189,7 +224,7 @@ namespace AppBotVUR.Bot
                 if (classCss.ToLower().Contains("hide") == false)
                 {
                     var dataTd = item.FindElements(By.TagName("td"));
-                    datos.Estado = dataTd[3].Text;
+                    var estado = dataTd[3].Text;
                     dataTd[5].FindElement(By.TagName("a")).Click();
 
                     var ubicacionTablaCategorias = ubicacionTabla + $"[{i + 2}]//table/tbody/tr";
@@ -205,6 +240,9 @@ namespace AppBotVUR.Bot
                             datos.FechaExpedicion = dataTdCategoria[1].Text;
                             datos.FechaVencimiento = dataTdCategoria[2].Text;
                             datos.CategoriaAntigua = dataTdCategoria[3].Text;
+                            datos.Estado = estado;
+                            listado.Add(datos);
+                            datos = new Datos();
                         }
                     }
                     catch (Exception)
@@ -215,8 +253,7 @@ namespace AppBotVUR.Bot
                     dataTd[5].FindElement(By.TagName("a")).Click();
                     Thread.Sleep(500);
 
-                    listado.Add(datos);
-                    datos = new Datos();
+          
                 }
             }
             return listado;

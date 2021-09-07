@@ -34,5 +34,10 @@ namespace AppBotVUR
 
             txtTiposDocumentos.Text = resultado;
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(txtTiposDocumentos.Text);
+        }
     }
 }

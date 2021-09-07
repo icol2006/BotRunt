@@ -81,7 +81,7 @@ namespace AppBotVUR
         private void button1_Click(object sender, EventArgs e)
         {
             EstadoForm.procesando = false;            
-            toogleBotones();
+           // toogleBotones();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -101,7 +101,7 @@ namespace AppBotVUR
         }
 
 
-        private void iniciarEscaneo()
+        private async void iniciarEscaneo()
         {
             if (this.listadoDatosBusqueda.Count()>0)
             {
@@ -109,12 +109,13 @@ namespace AppBotVUR
 
                 EstadoForm.listadoResultados.Clear();
 
-                Thread thread = new Thread(() =>
+                Thread thread = new Thread( async() =>
+                
                 {
                     try
                     {
                         EstadoForm.procesando = true;
-                        Procesamiento.iniciarProcesamiento(this.driverChrome.driver, this.listadoDatosBusqueda);
+                        await  Procesamiento.iniciarProcesamiento(this.driverChrome.driver, this.listadoDatosBusqueda);
                      
                     }
                     catch (Exception ex)
@@ -209,11 +210,12 @@ namespace AppBotVUR
 
         private void toogleBotones()
         {
-            btnDetener.Enabled = !(btnDetener.Enabled);
-            btnProcesar.Enabled = !(btnProcesar.Enabled);
-            btnCargarDatos.Enabled = !(btnCargarDatos.Enabled);
-            btnBorrarDatos.Enabled = !(btnBorrarDatos.Enabled);
-            btnExportar.Enabled = !(btnExportar.Enabled);
+            var res = !(btnDetener.Enabled == true ? true : false);
+            btnDetener.Enabled = !(btnDetener.Enabled==true?true:false);
+            btnProcesar.Enabled = !(btnProcesar.Enabled == true ? true : false);
+            btnCargarDatos.Enabled = !(btnCargarDatos.Enabled == true ? true : false);
+            btnBorrarDatos.Enabled = !(btnBorrarDatos.Enabled == true ? true : false);
+            btnExportar.Enabled = !(btnExportar.Enabled == true ? true : false);
         }
 
         public void abrirBot()
@@ -285,23 +287,12 @@ namespace AppBotVUR
             frmApiCaptcha.Show();
         }
 
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-            var json = File.ReadAllText("config.txt");
-            var result = JsonConvert.DeserializeObject<Configuraciones>(json);
-            var afdfdsd = result.apiKey;
-            result.apiKey = "fdafadf";
-            var jsonString = JsonConvert.SerializeObject(result);
-            File.WriteAllText("config.txt", jsonString);
-
-        }
-
         public async void resolver()
         {
             Utiles.solvecatcha("", FileType.Jpeg);
       
         }
 
-       
+
     }
 }
