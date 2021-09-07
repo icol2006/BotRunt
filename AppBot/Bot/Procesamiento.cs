@@ -69,12 +69,14 @@ namespace AppBotVUR.Bot
             }
             catch (Exception ex)
             {
+                hacerClickElemento(driver, "//*[@id='accordion']/div[1]//a");
+
                 resultadoProceso.Procesado = false;
                 resultadoProceso.Mensaje = ex.Message;
             }
 
             //Finalizar consulta
-            clickTryCatch(driver, "//button[contains(text(), 'consulta')]");
+            hacerClickElementoTryCatch(driver, "//button[contains(text(), 'consulta')]");
 
             datosObtenidos.TipoDocumento = datosBusqueda.TipoDocumento;
             datosObtenidos.NumIdentificacion = datosBusqueda.NumIdentificacion;
@@ -120,7 +122,7 @@ namespace AppBotVUR.Bot
                 resultadoProceso.Procesado = element.Text.Trim().Length > 0 ? false : true;
 
                 Thread.Sleep(500);
-                clickTryCatch(driver, "//*[@class='modal-body']//button");
+                hacerClickElementoTryCatch(driver, "//*[@class='modal-body']//button");
              
 
 
@@ -134,7 +136,7 @@ namespace AppBotVUR.Bot
             return resultadoProceso;
         }
 
-        private static void clickTryCatch(IWebDriver driver,string elemento)
+        private static void hacerClickElementoTryCatch(IWebDriver driver,string elemento)
         {
             try
             {
@@ -147,6 +149,12 @@ namespace AppBotVUR.Bot
             }
         }
 
+        private static void hacerClickElemento(IWebDriver driver, string elemento)
+        {
+                var element = driver.FindElement(By.XPath(elemento));
+                element.Click();
+        }
+
 
 
         private static List<Datos> procesarPaginaInformacion(IWebDriver driver)
@@ -154,8 +162,16 @@ namespace AppBotVUR.Bot
             IWebElement element = null;
             WebDriverWait wait = new WebDriverWait(driver, new TimeSpan(0, 0, 4)); ;
 
-            element = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.ClassName("i_licencias")));
-            element.Click();
+            ////*[@id='accordion']//i
+            Thread.Sleep(1000);
+            element = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("//*[@id='accordion']/div[1]")));
+            //element=driver.FindElement(By.XPath("//*[@id='accordion']/div[1]//a"));
+            //element.Click();
+            hacerClickElemento(driver, "//*[@id='accordion']/div[1]//a");
+            //IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+            //js.ExecuteScript("document.getElementsByClassName('i_licencias')[0].click()");
+
+
             Thread.Sleep(500);
 
             var listadoDatos = obtenerDatosLicencias(driver);
@@ -212,6 +228,7 @@ namespace AppBotVUR.Bot
             List<Datos> listado = new List<Datos>();
             Datos datos = new Datos();
             WebDriverWait wait = new WebDriverWait(driver, new TimeSpan(0, 0, 5));
+            IWebElement element = null;
 
             var ubicacionTabla = "//*[@id='pnlInformacionLicencias']/div/div/table/tbody/tr";
             var filas = driver.FindElements(By.XPath(ubicacionTabla));
@@ -225,7 +242,21 @@ namespace AppBotVUR.Bot
                 {
                     var dataTd = item.FindElements(By.TagName("td"));
                     var estado = dataTd[3].Text;
-                    dataTd[5].FindElement(By.TagName("a")).Click();
+
+                    var linkVerDetalle = dataTd[5].FindElement(By.TagName("a"));
+
+                    try
+                    {
+                        linkVerDetalle.Click();
+                    }
+                    catch (Exception)
+                    {
+                        hacerClickElemento(driver, "//*[@id='accordion']/div[1]//a");
+                        Thread.Sleep(500);
+                        linkVerDetalle.Click();
+                        Thread.Sleep(500);
+
+                    }                
 
                     var ubicacionTablaCategorias = ubicacionTabla + $"[{i + 2}]//table/tbody/tr";
                     Thread.Sleep(500);
