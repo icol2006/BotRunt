@@ -90,7 +90,7 @@ namespace AppBotVUR
       
             EstadoForm.procesando = false;
             if (driverChrome != null)
-                driverChrome.CloseDriver();
+                driverChrome.CloseDriver(this);
 
             Thread.Sleep(500);
         }
@@ -223,7 +223,7 @@ namespace AppBotVUR
             try
             {
                 driverChrome = new DriverChrome();
-                driverChrome.iniciarNavegador();
+                driverChrome.iniciarNavegador(this);
 
                 this.btnAbrirBot.Enabled = false;
                 this.btnProcesar.Enabled = true;

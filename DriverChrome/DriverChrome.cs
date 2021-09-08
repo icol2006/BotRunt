@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace AppDriverChrome
 {
@@ -28,7 +29,7 @@ namespace AppDriverChrome
         private void setDriverOptions()
         {
             chromeDriverService = ChromeDriverService.CreateDefaultService();
-           // chromeDriverService.HideCommandPromptWindow = true;
+            chromeDriverService.HideCommandPromptWindow = true;
 
             chromeOptions = new ChromeOptions();
             //chromeOptions.AddArguments("headless");
@@ -42,29 +43,52 @@ namespace AppDriverChrome
         /// Visibility of driver
         /// </summary>
         /// <param name="visible"></param>
-        public void setDriver()
+        public void setDriver(Form form)
         {
             Thread thread = new Thread(() =>
             {
-                driver = new ChromeDriver(chromeDriverService, chromeOptions);
+                try
+                {
+                    driver = new ChromeDriver(chromeDriverService, chromeOptions);
+                }
+                catch (Exception ex)
+                {
+                    form.Invoke(new Action(() =>
+                    {
+                        MessageBox.Show(ex.Message);
+                    }));
+                }
+               
             });
             thread.Start();
         }
 
-        public void CloseDriver()
+        public void CloseDriver(Form form)
         {
-            driver.Dispose();
+            Thread thread = new Thread(() =>
+            {
+                try
+                {
+                    if(driver!=null)
+                    driver.Dispose();
+                }
+                catch (Exception ex)
+                {
+      
+                }
+
+            });
+            thread.Start();        
         }
 
-
-        public void iniciarNavegador()
+        public void iniciarNavegador(Form form)
         {
             Thread thread = new Thread(() =>
             {
                 try
                 {
                     driver = null;
-                    this.setDriver();
+                    this.setDriver(form);
                 }
                 catch (Exception ex)
                 {
@@ -77,4 +101,3 @@ namespace AppDriverChrome
 
     }
 }
-

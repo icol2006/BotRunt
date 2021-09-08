@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace AppDriverFirefox
 {
@@ -51,7 +52,7 @@ namespace AppDriverFirefox
         }
 
 
-        public void iniciarNavegador()
+        public void iniciarNavegador(Form form)
         {
             Thread thread = new Thread(() =>
             {
@@ -62,6 +63,10 @@ namespace AppDriverFirefox
                 }
                 catch (Exception ex)
                 {
+                    form.Invoke(new Action(() =>
+                    {
+                        MessageBox.Show(ex.Message);
+                    }));
                 }
 
             });

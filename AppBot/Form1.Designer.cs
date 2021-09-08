@@ -268,7 +268,7 @@ namespace AppBotVUR
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(51, 13);
             this.label4.TabIndex = 25;
-            this.label4.Text = "Version 1";
+            this.label4.Text = "Version 2";
             // 
             // menuStrip1
             // 

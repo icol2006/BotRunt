@@ -69,14 +69,16 @@ namespace AppBotVUR.Bot
             }
             catch (Exception ex)
             {
-                hacerClickElemento(driver, "//*[@id='accordion']/div[1]//a");
+               // hacerClickElemento(driver, "//*[@id='accordion']/div[1]//a");
 
                 resultadoProceso.Procesado = false;
                 resultadoProceso.Mensaje = ex.Message;
             }
 
             //Finalizar consulta
-            hacerClickElementoTryCatch(driver, "//button[contains(text(), 'consulta')]");
+            // hacerClickElementoTryCatch(driver, "//*[@type='submit']");
+            hacerClickElementoTryCatch(driver, "//button[1]");
+            
 
             datosObtenidos.TipoDocumento = datosBusqueda.TipoDocumento;
             datosObtenidos.NumIdentificacion = datosBusqueda.NumIdentificacion;
@@ -93,6 +95,8 @@ namespace AppBotVUR.Bot
 
             try
             {
+                hacerClickElementoTryCatch(driver, "//*[@class='modal-body']//button");
+
                 seleccionarTipoIdentificacion(driver, datosBusqueda.TipoDocumento);
 
                 element = driver.FindElement(By.XPath("//*[@name='noDocumento']"));
@@ -112,8 +116,7 @@ namespace AppBotVUR.Bot
                 element = driver.FindElement(By.XPath("//*[@id='captcha']"));
                 element.SendKeys(codigo);
 
-
-                element = driver.FindElement(By.XPath("//*[contains(text(), 'Consultar')]"));
+                element = driver.FindElement(By.XPath("//*[@type='submit']"));
                 element.Click();
 
                 Thread.Sleep(500);
@@ -122,10 +125,7 @@ namespace AppBotVUR.Bot
                 resultadoProceso.Procesado = element.Text.Trim().Length > 0 ? false : true;
 
                 Thread.Sleep(500);
-                hacerClickElementoTryCatch(driver, "//*[@class='modal-body']//button");
-             
-
-
+                hacerClickElementoTryCatch(driver, "//*[@class='modal-body']//button");         
             }
             catch (Exception ex)
             {
@@ -143,9 +143,9 @@ namespace AppBotVUR.Bot
                 var element = driver.FindElement(By.XPath(elemento));
                 element.Click();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Console.WriteLine(ex.Message);
             }
         }
 
@@ -168,9 +168,7 @@ namespace AppBotVUR.Bot
             //element=driver.FindElement(By.XPath("//*[@id='accordion']/div[1]//a"));
             //element.Click();
             hacerClickElemento(driver, "//*[@id='accordion']/div[1]//a");
-            //IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-            //js.ExecuteScript("document.getElementsByClassName('i_licencias')[0].click()");
-
+         
 
             Thread.Sleep(500);
 
@@ -229,6 +227,7 @@ namespace AppBotVUR.Bot
             Datos datos = new Datos();
             WebDriverWait wait = new WebDriverWait(driver, new TimeSpan(0, 0, 5));
             IWebElement element = null;
+            String estado = "";
 
             var ubicacionTabla = "//*[@id='pnlInformacionLicencias']/div/div/table/tbody/tr";
             var filas = driver.FindElements(By.XPath(ubicacionTabla));
@@ -240,8 +239,9 @@ namespace AppBotVUR.Bot
 
                 if (classCss.ToLower().Contains("hide") == false)
                 {
+                   
                     var dataTd = item.FindElements(By.TagName("td"));
-                    var estado = dataTd[3].Text;
+                    estado = dataTd[3].Text;
 
                     var linkVerDetalle = dataTd[5].FindElement(By.TagName("a"));
 
@@ -255,7 +255,7 @@ namespace AppBotVUR.Bot
                         Thread.Sleep(500);
                         linkVerDetalle.Click();
                         Thread.Sleep(500);
-
+                        estado = dataTd[3].Text;
                     }                
 
                     var ubicacionTablaCategorias = ubicacionTabla + $"[{i + 2}]//table/tbody/tr";
@@ -283,8 +283,7 @@ namespace AppBotVUR.Bot
 
                     dataTd[5].FindElement(By.TagName("a")).Click();
                     Thread.Sleep(500);
-
-          
+                             
                 }
             }
             return listado;
