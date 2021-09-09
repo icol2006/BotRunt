@@ -72,13 +72,12 @@ namespace AppBotVUR.Bot
                // hacerClickElemento(driver, "//*[@id='accordion']/div[1]//a");
 
                 resultadoProceso.Procesado = false;
-                resultadoProceso.Mensaje = ex.Message;
+                resultadoProceso.Mensaje = ex.Message + " " + EstadoForm.procedimientoActual;
             }
 
             //Finalizar consulta
             // hacerClickElementoTryCatch(driver, "//*[@type='submit']");
-            hacerClickElementoTryCatch(driver, "//button[1]");
-            
+            hacerClickElementoTryCatch(driver, "//button[1]");            
 
             datosObtenidos.TipoDocumento = datosBusqueda.TipoDocumento;
             datosObtenidos.NumIdentificacion = datosBusqueda.NumIdentificacion;
@@ -119,17 +118,19 @@ namespace AppBotVUR.Bot
                 element = driver.FindElement(By.XPath("//*[@type='submit']"));
                 element.Click();
 
+                EstadoForm.procedimientoActual = "#4094afdasd";
                 Thread.Sleep(500);
                 element = driver.FindElement(By.XPath("//*[@id='msgConsulta']"));
                 resultadoProceso.Mensaje = element.Text;
                 resultadoProceso.Procesado = element.Text.Trim().Length > 0 ? false : true;
 
+                EstadoForm.procedimientoActual = "#43oi43iodas";
                 Thread.Sleep(500);
                 hacerClickElementoTryCatch(driver, "//*[@class='modal-body']//button");         
             }
             catch (Exception ex)
             {
-                resultadoProceso.Mensaje = ex.Message;
+                resultadoProceso.Mensaje = ex.Message+" "+ EstadoForm.procedimientoActual;
                 resultadoProceso.Procesado = false;
             }
 
@@ -161,14 +162,13 @@ namespace AppBotVUR.Bot
         {
             IWebElement element = null;
             WebDriverWait wait = new WebDriverWait(driver, new TimeSpan(0, 0, 4)); ;
+            EstadoForm.procedimientoActual = "#164089843dd";
 
-            ////*[@id='accordion']//i
             Thread.Sleep(1000);
             element = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("//*[@id='accordion']/div[1]")));
-            //element=driver.FindElement(By.XPath("//*[@id='accordion']/div[1]//a"));
-            //element.Click();
-            hacerClickElemento(driver, "//*[@id='accordion']/div[1]//a");
-         
+
+            EstadoForm.procedimientoActual = "#4322xdsa";
+            hacerClickElemento(driver, "//*[@id='accordion']/div[1]//a");         
 
             Thread.Sleep(500);
 
@@ -180,6 +180,7 @@ namespace AppBotVUR.Bot
         {
             SelectElement select = new SelectElement(driver.FindElement(By.XPath("//select")));
 
+            EstadoForm.procedimientoActual = "#181lsfadl434";
             switch (tipo)
             {
                 case "CARNET DIPLOMATICO":
@@ -212,10 +213,12 @@ namespace AppBotVUR.Bot
             //ss.SaveAsFile(Parametros.imageCaptchaPath,
             //ScreenshotImageFormat.Bmp);
             //return null;
-
+            EstadoForm.procedimientoActual = "214kdsl43";
             Screenshot sc = ((ITakesScreenshot)driver).GetScreenshot();
             var img = Image.FromStream(new MemoryStream(sc.AsByteArray)) as Bitmap;
             var loca = element.Location;
+
+            EstadoForm.procedimientoActual = "#sdalfdsj34";
             return img.Clone(new Rectangle(element.Location, element.Size), img.PixelFormat);
 
             //   return img.Clone(new Rectangle(element.Location,element.Size), img.PixelFormat);
@@ -229,8 +232,11 @@ namespace AppBotVUR.Bot
             IWebElement element = null;
             String estado = "";
 
+            EstadoForm.procedimientoActual = "#4309afjadsl";
             var ubicacionTabla = "//*[@id='pnlInformacionLicencias']/div/div/table/tbody/tr";
             var filas = driver.FindElements(By.XPath(ubicacionTabla));
+
+            EstadoForm.procedimientoActual = "#43lfaj43vvasd";
 
             for (int i = 0; i < filas.Count(); i++)
             {
@@ -239,7 +245,7 @@ namespace AppBotVUR.Bot
 
                 if (classCss.ToLower().Contains("hide") == false)
                 {
-                   
+                    EstadoForm.procedimientoActual = "#adflkj34l";
                     var dataTd = item.FindElements(By.TagName("td"));
                     estado = dataTd[3].Text;
 
@@ -252,6 +258,7 @@ namespace AppBotVUR.Bot
                     catch (Exception)
                     {
                         hacerClickElemento(driver, "//*[@id='accordion']/div[1]//a");
+                        EstadoForm.procedimientoActual = "#sdl34jkajfdjsjl";
                         Thread.Sleep(500);
                         linkVerDetalle.Click();
                         Thread.Sleep(500);
@@ -263,9 +270,11 @@ namespace AppBotVUR.Bot
 
                     try
                     {
+                        EstadoForm.procedimientoActual = "#adsldsk444";
                         var filasCategorias = driver.FindElements(By.XPath(ubicacionTablaCategorias));
                         foreach (var filaCategoria in filasCategorias)
                         {
+                            EstadoForm.procedimientoActual = "#4lafdskadkl";
                             var dataTdCategoria = filaCategoria.FindElements(By.TagName("td"));
                             datos.Categoria = dataTdCategoria[0].Text;
                             datos.FechaExpedicion = dataTdCategoria[1].Text;
@@ -281,6 +290,7 @@ namespace AppBotVUR.Bot
 
                     }
 
+                    EstadoForm.procedimientoActual = "#sad4343lk";
                     dataTd[5].FindElement(By.TagName("a")).Click();
                     Thread.Sleep(500);
                              

@@ -20,6 +20,7 @@ namespace AppBotVUR.Modelos
         public static Boolean procesando=false;
 
         public static string estado = "Detenido";
+        public static string procedimientoActual = "";
 
         public static Form form { get; set; }
         public static DataGridView dataGridView { get; set; }
